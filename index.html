@@ -11,6 +11,129 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
   <!-- Babel para procesar JSX -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    /* Variables de colores */
+    :root {
+      --primary-color: #fd9207;
+      --primary-dark: #b96a29;
+      --secondary-color: #f8f9fa;
+      --text-color: #333;
+      --light-gray: #e9ecef;
+      --border-radius: 8px;
+      --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    #root {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .app-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      margin-top: 20px;
+    }
+
+    .app-header {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--light-gray);
+      padding-bottom: 15px;
+    }
+
+    .comment-form {
+      display: flex;
+      margin-bottom: 30px;
+      gap: 10px;
+    }
+
+    .comment-input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 1px solid var(--light-gray);
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      transition: border 0.3s ease;
+    }
+
+    .comment-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(219, 161, 52, 0.2);
+    }
+
+    .submit-button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit-button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .comments-section {
+      background-color: var(--secondary-color);
+      border-radius: var(--border-radius);
+      padding: 20px;
+    }
+
+    .comments-title {
+      font-size: 22px;
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+    }
+
+    .comments-list {
+      list-style-type: none;
+    }
+
+    .comment-item {
+      background-color: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      border-left: 4px solid var(--primary-color);
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .empty-comments {
+      text-align: center;
+      color: #6c757d;
+      font-style: italic;
+      padding: 15px;
+    }
+  </style>
 </head>
 <body>
   <div id="root"></div>
@@ -18,7 +141,7 @@
   <script type="text/babel">
     // Componente de saludo inicial
     function Greeting() {
-      return <h1>¡Hola, bienvenido a React!</h1>;
+      return <h1 className="app-header">¡Hola, bienvenido a React!</h1>;
     }
 
     // Componente hijo: formulario de comentarios
@@ -34,16 +157,25 @@
       };
 
       return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="comment-form">
           <input
             type="text"
             placeholder="Escribe un comentario"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            className="comment-input"
+            autoFocus
           />
-          <button type="submit">Enviar comentario</button>
+          <button type="submit" className="submit-button">
+            Enviar
+          </button>
         </form>
       );
+    }
+
+    // Componente para mostrar un comentario individual
+    function CommentItem({ text }) {
+      return <li className="comment-item">{text}</li>;
     }
 
     // Componente padre: App
@@ -55,15 +187,21 @@
       };
 
       return (
-        <div>
+        <div className="app-container">
           <Greeting />
           <CommentForm onAddComment={addComment} />
-          <h2>Comentarios:</h2>
-          <ul>
-            {comments.map((comment, index) => (
-              <li key={index}>{comment}</li>
-            ))}
-          </ul>
+          <div className="comments-section">
+            <h2 className="comments-title">Comentarios:</h2>
+            {comments.length > 0 ? (
+              <ul className="comments-list">
+                {comments.map((comment, index) => (
+                  <CommentItem key={index} text={comment} />
+                ))}
+              </ul>
+            ) : (
+              <p className="empty-comments">No hay comentarios aún. ¡Sé el primero en comentar!</p>
+            )}
+          </div>
         </div>
       );
     }
